@@ -13,9 +13,4 @@ class AuthenticationParams {
   });
   final String email;
   final String secret;
-
-  Map toJson() => {
-        'email': email,
-        'password': secret,
-      };
 }
