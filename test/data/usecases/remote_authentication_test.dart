@@ -48,7 +48,7 @@ void main() {
   });
 
   test('Should call HttpClient with correct URL', () async {
-    await sut.auth(params);
+    await sut.auth(params: params);
 
     verify(httpClient.request(
       url: url,
@@ -64,7 +64,7 @@ void main() {
     mockHttpError(HttpError.badRequest);
 
     //Act
-    final future = sut.auth(params);
+    final future = sut.auth(params: params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -73,7 +73,7 @@ void main() {
     mockHttpError(HttpError.notFound);
 
     //Act
-    final future = sut.auth(params);
+    final future = sut.auth(params: params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -81,7 +81,7 @@ void main() {
     mockHttpError(HttpError.serverError);
 
     //Act
-    final future = sut.auth(params);
+    final future = sut.auth(params: params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
@@ -90,7 +90,7 @@ void main() {
     mockHttpError(HttpError.unauthorized);
 
     //Act
-    final future = sut.auth(params);
+    final future = sut.auth(params: params);
 
     expect(future, throwsA(DomainError.invalidCredentials));
   });
@@ -99,7 +99,7 @@ void main() {
     mockHttpData(validData);
 
     //Act
-    final account = await sut.auth(params);
+    final account = await sut.auth(params: params);
 
     expect(account.token, validData['accessToken']);
   });
@@ -117,7 +117,7 @@ void main() {
     );
 
     //Act
-    final future = sut.auth(params);
+    final future = sut.auth(params: params);
 
     expect(future, throwsA(DomainError.unexpected));
   });
