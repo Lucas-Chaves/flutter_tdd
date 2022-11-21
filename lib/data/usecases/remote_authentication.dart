@@ -1,9 +1,8 @@
-import 'dart:io';
-
 import '../../domain/entities/entities.dart';
 import '../../domain/helpers/helpers.dart';
 import '../../domain/usecases/usecases.dart';
 
+import '../model/model.dart';
 import '../http/http.dart';
 
 class RemoteAuthentication {
@@ -23,7 +22,7 @@ class RemoteAuthentication {
         method: 'post',
         body: body,
       );
-      return AccountEntity.fromJson(httpResponse);
+      return RemoteAccountModel.fromJson(httpResponse).toEntity();
     } on HttpError catch (error) {
       switch (error) {
         case HttpError.unauthorized:
