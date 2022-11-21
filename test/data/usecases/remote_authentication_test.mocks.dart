@@ -25,7 +25,7 @@ import 'remote_authentication_test.dart' as _i2;
 /// See the documentation for Mockito's code generation for more information.
 class MockHttpClientSpy extends _i1.Mock implements _i2.HttpClientSpy {
   @override
-  _i3.Future<void>? request({
+  _i3.Future<Map<dynamic, dynamic>> request({
     required String? url,
     required String? method,
     Map<dynamic, dynamic>? body,
@@ -40,6 +40,9 @@ class MockHttpClientSpy extends _i1.Mock implements _i2.HttpClientSpy {
             #body: body,
           },
         ),
-        returnValueForMissingStub: _i3.Future<void>.value(),
-      ) as _i3.Future<void>?);
+        returnValue:
+            _i3.Future<Map<dynamic, dynamic>>.value(<dynamic, dynamic>{}),
+        returnValueForMissingStub:
+            _i3.Future<Map<dynamic, dynamic>>.value(<dynamic, dynamic>{}),
+      ) as _i3.Future<Map<dynamic, dynamic>>);
 }
