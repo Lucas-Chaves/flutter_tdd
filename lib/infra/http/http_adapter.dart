@@ -40,6 +40,8 @@ class HttpAdapter implements HttpClient {
         return throw HttpError.unauthorized;
       case 403:
         return throw HttpError.forbidden;
+      case 404:
+        return throw HttpError.notFound;
       default:
         return throw HttpError.serverError;
     }
