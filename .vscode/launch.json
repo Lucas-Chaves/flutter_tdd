@@ -1,6 +1,12 @@
 {
     "configurations": [
         {
+            "name": "Run app",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main/main.dart"
+        },
+        {
             "name": "Dart: Run all Tests",
             "type": "dart",
             "request": "launch",
