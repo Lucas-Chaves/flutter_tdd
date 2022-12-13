@@ -141,4 +141,41 @@ void main() {
 
     expect(find.text('any error'), findsOneWidget);
   });
+
+  testWidgets("Should present no error if password is valid",
+      (WidgetTester tester) async {
+    //Arrange
+    await loadPage(tester);
+
+    passwordErrorController.add(null);
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel("Senha"),
+        matching: find.byType(Text),
+      ),
+      findsOneWidget,
+      reason:
+          'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text',
+    );
+  });
+  testWidgets("Should present no error if email is valid with password strings",
+      (WidgetTester tester) async {
+    //Arrange
+    await loadPage(tester);
+
+    passwordErrorController.add('');
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel("Senha"),
+        matching: find.byType(Text),
+      ),
+      findsOneWidget,
+      reason:
+          'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text',
+    );
+  });
 }
