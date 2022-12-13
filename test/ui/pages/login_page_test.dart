@@ -15,14 +15,13 @@ class LoginPresenterSpy extends Mock implements LoginPresenter {}
 
 void main() {
   late LoginPresenter presenter;
-  late StreamController<String> emailErrorController;
+  late StreamController<String?> emailErrorController;
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = MockLoginPresenterSpy();
-    emailErrorController = StreamController<String>();
+    emailErrorController = StreamController<String?>();
     when(presenter.emailErrorStream)
         .thenAnswer((_) => emailErrorController.stream);
-    emailErrorController = StreamController<String>();
     final loginPage = MaterialApp(
         home: LoginPage(
       presenter: presenter,
@@ -80,7 +79,7 @@ void main() {
     verify(presenter.validatePassword(password));
   });
 
-  testWidgets("Should presente error if email is invalida ",
+  testWidgets("Should present error if email is invalid",
       (WidgetTester tester) async {
     //Arrange
     await loadPage(tester);
@@ -89,5 +88,41 @@ void main() {
     await tester.pump();
 
     expect(find.text('any error'), findsOneWidget);
+  });
+  testWidgets("Should present no error if email is valid",
+      (WidgetTester tester) async {
+    //Arrange
+    await loadPage(tester);
+
+    emailErrorController.add(null);
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel("Email"),
+        matching: find.byType(Text),
+      ),
+      findsOneWidget,
+      reason:
+          'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text',
+    );
+  });
+  testWidgets("Should present no error if email is valid with empty strings",
+      (WidgetTester tester) async {
+    //Arrange
+    await loadPage(tester);
+
+    emailErrorController.add('');
+    await tester.pump();
+
+    expect(
+      find.descendant(
+        of: find.bySemanticsLabel("Email"),
+        matching: find.byType(Text),
+      ),
+      findsOneWidget,
+      reason:
+          'when a TextFormField has only one text child, means it has no errors, since one of the childs is always the label text',
+    );
   });
 }
