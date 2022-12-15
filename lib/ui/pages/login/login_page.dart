@@ -4,11 +4,16 @@ import 'package:flutter_tdd/ui/pages/pages.dart';
 
 import '../../components/components.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({required this.presenter, super.key});
 
   final LoginPresenter presenter;
 
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,58 +21,64 @@ class LoginPage extends StatelessWidget {
         builder: (context) {
           loadingDialog(context);
           snackbarError(context);
-          return FormBody(presenter: presenter);
+          return FormBody(presenter: widget.presenter);
         },
       ),
     );
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    widget.presenter.dispose();
+  }
+
   StreamSubscription<String?> snackbarError(BuildContext context) {
-    return presenter.mainErrorStream.listen((error) {
-          if (error != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Colors.red[900],
-                content: Text(
-                  error,
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            );
-          }
-        });
+    return widget.presenter.mainErrorStream.listen((error) {
+      if (error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.red[900],
+            content: Text(
+              error,
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+      }
+    });
   }
 
   StreamSubscription<bool?> loadingDialog(BuildContext context) {
-    return presenter.isLoadingStream.listen((isLoading) {
-          if (isLoading != null && isLoading) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) {
-                return SimpleDialog(
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        CircularProgressIndicator(),
-                        SizedBox(height: 10),
-                        Text(
-                          'Aguarde...',
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
-                    )
+    return widget.presenter.isLoadingStream.listen((isLoading) {
+      if (isLoading != null && isLoading) {
+        showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) {
+            return SimpleDialog(
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 10),
+                    Text(
+                      'Aguarde...',
+                      textAlign: TextAlign.center,
+                    ),
                   ],
-                );
-              },
+                )
+              ],
             );
-          } else {
-            if (Navigator.canPop(context)) {
-              Navigator.of(context).pop();
-            }
-          }
-        });
+          },
+        );
+      } else {
+        if (Navigator.canPop(context)) {
+          Navigator.of(context).pop();
+        }
+      }
+    });
   }
 }
 
