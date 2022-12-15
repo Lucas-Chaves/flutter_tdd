@@ -1,7 +1,75 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_tdd/ui/pages/pages.dart';
 
 import '../../components/components.dart';
+
+class LoginPage extends StatelessWidget {
+  const LoginPage({required this.presenter, super.key});
+
+  final LoginPresenter presenter;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Builder(
+        builder: (context) {
+          loadingDialog(context);
+          snackbarError(context);
+          return FormBody(presenter: presenter);
+        },
+      ),
+    );
+  }
+
+  StreamSubscription<String?> snackbarError(BuildContext context) {
+    return presenter.mainErrorStream.listen((error) {
+          if (error != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                backgroundColor: Colors.red[900],
+                content: Text(
+                  error,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            );
+          }
+        });
+  }
+
+  StreamSubscription<bool?> loadingDialog(BuildContext context) {
+    return presenter.isLoadingStream.listen((isLoading) {
+          if (isLoading != null && isLoading) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return SimpleDialog(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 10),
+                        Text(
+                          'Aguarde...',
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    )
+                  ],
+                );
+              },
+            );
+          } else {
+            if (Navigator.canPop(context)) {
+              Navigator.of(context).pop();
+            }
+          }
+        });
+  }
+}
 
 class FormBody extends StatelessWidget {
   const FormBody({
@@ -79,52 +147,6 @@ class FormBody extends StatelessWidget {
             )),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class LoginPage extends StatelessWidget {
-  const LoginPage({required this.presenter, super.key});
-
-  final LoginPresenter presenter;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(
-        builder: (context) {
-          presenter.isLoadingStream.listen((isLoading) {
-            if (isLoading != null && isLoading) {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  return SimpleDialog(
-                    children: [
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
-                          CircularProgressIndicator(),
-                          SizedBox(height: 10),
-                          Text(
-                            'Aguarde...',
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      )
-                    ],
-                  );
-                },
-              );
-            } else {
-              if (Navigator.canPop(context)) {
-                Navigator.of(context).pop();
-              }
-            }
-          });
-          return FormBody(presenter: presenter);
-        },
       ),
     );
   }
